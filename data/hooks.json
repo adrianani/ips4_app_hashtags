@@ -1,0 +1,10 @@
+{
+    "S_Content_Item": {
+        "type": "C",
+        "class": "\\IPS\\Content\\Item"
+    },
+    "S_Content_Comment": {
+        "type": "C",
+        "class": "\\IPS\\Content\\Comment"
+    }
+}
