@@ -30,20 +30,6 @@
                 "values": [],
                 "zerofill": false
             },
-            "meta_id": {
-                "allow_null": true,
-                "auto_increment": false,
-                "binary": false,
-                "comment": "",
-                "decimals": null,
-                "default": null,
-                "length": 20,
-                "name": "meta_id",
-                "type": "BIGINT",
-                "unsigned": true,
-                "values": [],
-                "zerofill": false
-            },
             "meta_app": {
                 "allow_null": false,
                 "auto_increment": false,
@@ -169,13 +155,11 @@
                 "name": "meta_app",
                 "length": [
                     85,
-                    85,
-                    null
+                    85
                 ],
                 "columns": [
                     "meta_app",
-                    "meta_module",
-                    "meta_id"
+                    "meta_module"
                 ]
             },
             "hashtag": {

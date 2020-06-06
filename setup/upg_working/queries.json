@@ -31,20 +31,6 @@
                         "auto_increment": false,
                         "binary": false
                     },
-                    "meta_id": {
-                        "name": "meta_id",
-                        "type": "BIGINT",
-                        "length": 20,
-                        "decimals": null,
-                        "values": null,
-                        "allow_null": true,
-                        "default": null,
-                        "comment": "",
-                        "unsigned": true,
-                        "zerofill": false,
-                        "auto_increment": false,
-                        "binary": false
-                    },
                     "meta_app": {
                         "name": "meta_app",
                         "type": "VARCHAR",
@@ -200,6 +186,25 @@
                         ]
                     }
                 }
+            }
+        ]
+    },
+    {
+        "method": "changeIndex",
+        "params": [
+            "meta_app",
+            "meta_app",
+            {
+                "type": "key",
+                "name": "meta_app",
+                "length": [
+                    85,
+                    85
+                ],
+                "columns": [
+                    "meta_app",
+                    "meta_module"
+                ]
             }
         ]
     }

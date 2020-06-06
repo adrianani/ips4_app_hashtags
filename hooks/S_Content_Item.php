@@ -14,24 +14,24 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 
 		if( isset( static::$databaseColumnMap['content'] ) ) {
 			$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ] = preg_replace_callback( 
-				'/(^|\s)(#(([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+)))/iu',
+				'/(^|\s)(<a (([a-zA-Z]+)=(\u0027|\u0022)([^\u0022]*|[^\u0027]*)(\u0027|\u0022)*)>)?(#([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+))(<\/a>)?/iu',
 				function( $matches ) use ( $container, $tagInserts ){
-					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
+					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[9]);
 					$member = \IPS\Member::loggedIn();
 	
 					$tagInserts[] = \IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
-							'hashtag' => $matches[3],
+							'hashtag' => $matches[9],
 							'meta_app' => static::$application,
 							'meta_module' => static::$module,
-							'meta_parent_id' => $container->_id,
-							'meta_member_id' => $member->member_id ?: 0,
+							'meta_member_id' => $member->member_id,
+							'meta_node_id' => $container->_id,
 							'created' => time(),
 						]
 					);
 	
-					return "{$matches[1]}<a a href='{$url}' rel='tag'>{$matches[2]}</a>";
+					return "{$matches[1]}<a href='{$url}'>{$matches[8]}</a>";
 				}, 
 				$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ]
 			);
@@ -44,7 +44,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 			\IPS\Db::i()->update(
 				'hashtags_hashtags',
 				[
-					'meta_id' => $obj->$columnId,
+					'meta_item_id' => $obj->$columnId,
 				],
 				"id IN (" . implode(',', $tagInserts) . ")"
 			);
@@ -53,87 +53,92 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 		return $obj;
 	}
 
-	/* public function processAfterEdit( $values ) {
+	public function processForm( $values ) {
+		if( !$this->_new ) {
+			$columnId = static::$databaseColumnId;
+			$node = $this->container();
+			$columnAuthor = static::$databaseColumnMap['author'];
+			$author = $this->$columnAuthor;
 
-		$columnId = static::$databaseColumnId;
-		$container = $this->container();
-		$columnAuthor = static::$databaseColumnMap['author'];
+			\IPS\Db::i()->delete(
+				'hashtags_hashtags',
+				[
+					"meta_item_id=? AND meta_app=? AND meta_module=? AND meta_member_id=? AND meta_node_id=?",
+					$this->$columnId,
+					static::$application,
+					static::$module,
+					$author,
+					$node->_id
+				]
+			);
 
-		\IPS\Log::log($this->$columnAuthor, 'authorID');
-		$author = \IPS\Member::load( $this->$columnAuthor );
+			if(isset( static::$databaseColumnMap['content'] )) {
+				$columnContent = static::$databaseColumnMap['content'];
 
-		\IPS\Log::log($author, 'authorData');
+				$this->$columnContent = preg_replace_callback( 
+					'/(^|\s)(<a (([a-zA-Z]+)=(\u0027|\u0022)([^\u0022]*|[^\u0027]*)(\u0027|\u0022)*)>)?(#([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+))(<\/a>)?/iu',
+					function( $matches ) use ( $node, $author, $columnId ){
+						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[9]);
+		
+						$tagInserts[] = \IPS\Db::i()->insert(
+							'hashtags_hashtags',
+							[
+								'hashtag' => $matches[9],
+								'meta_app' => static::$application,
+								'meta_module' => static::$module,
+								'meta_member_id' => $author,
+								'meta_node_id' => $node->_id,
+								'meta_item_id' => $this->$columnId,
+								'created' => time(),
+							]
+						);
+		
+						return "{$matches[1]}<a href='{$url}'>{$matches[8]}</a>";
+					}, 
+					$values[ static::$formLangPrefix . $columnContent ]
+				);
 
-		\IPS\Db::i()->delete(
-			'hashtags_hashtags',
-			[
-				"meta_id=? AND meta_app=? AND meta_module=? AND meta_parent_id=? AND meta_member_id=?",
-				$this->$columnId,
-				static::$application,
-				static::$module,
-				$container->_id,
-				$author->member_id ?: 0,
-			]
-		);
+			}
+		}
 
-		if ( isset( static::$commentClass ) and static::$firstCommentRequired ) {
+		parent::processForm($values);
+	}
+
+	public function processAfterEdit( $values ) {
+		if( isset( static::$commentClass ) and static::$firstCommentRequired ) {
 			$comment = $this->firstComment();
-			$contentColumn = $comment::$databaseColumnMap['content'];
+			$commentAuhtorColumn = $comment::$databaseColumnMap['author'];
+			$author = $comment->$commentAuhtorColumn;
+			$node = $this->container();
+			$columnId = static::$databaseColumnId;
+			$commentColumnId = $comment::$databaseColumnId;
 
-			$comment->$contentColumn = preg_replace_callback( 
-				'/(^|\s)(#(([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+)))/iu',
-				function( $matches ) use ( $author, $container, $columnId ) {
-					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
-	
-					\IPS\Db::i()->insert(
+			$values[ static::$formLangPrefix . 'content' ] = preg_replace_callback( 
+				'/(^|\s)(<a (([a-zA-Z]+)=(\u0027|\u0022)([^\u0022]*|[^\u0027]*)(\u0027|\u0022)*)>)?(#([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+))(<\/a>)?/iu',
+				function( $matches ) use ( $author, $node, $columnId, $comment, $commentColumnId ){
+					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[9]);
+
+					$tagInserts[] = \IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
-							'hashtag' => $matches[3],
-							'meta_id' => $this->$columnId,
+							'hashtag' => $matches[9],
 							'meta_app' => static::$application,
 							'meta_module' => static::$module,
-							'meta_parent_id' => $container->_id,
-							'meta_member_id' => $author->member_id ?: 0,
+							'meta_member_id' => $author,
+							'meta_node_id' => $node->_id,
+							'meta_item_id' => $this->$columnId,
+							'meta_comment_id' => $comment->$commentColumnId,
 							'created' => time(),
 						]
 					);
-	
-					return "{$matches[1]}<a a href='{$url}' rel='tag'>{$matches[2]}</a>";
+
+					return "{$matches[1]}<a href='{$url}'>{$matches[8]}</a>";
 				}, 
 				$values[ static::$formLangPrefix . 'content' ]
 			);
-
-			$comment->save();
-		} else {
-			$contentColumn = static::$databaseColumnMap['content'];
-			
-			$this->$contentColumn = preg_replace_callback( 
-				'/(^|\s)(#(([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+)))/iu',
-				function( $matches ) use ( $author, $container, $columnId ) {
-					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
-	
-					\IPS\Db::i()->insert(
-						'hashtags_hashtags',
-						[
-							'hashtag' => $matches[3],
-							'meta_id' => $this->$columnId,
-							'meta_app' => static::$application,
-							'meta_module' => static::$module,
-							'meta_parent_id' => $container->_id,
-							'meta_member_id' => $author->member_id ?: 0,
-							'created' => time(),
-						]
-					);
-	
-					return "{$matches[1]}<a a href='{$url}' rel='tag'>{$matches[2]}</a>";
-				}, 
-				$values[ static::$formLangPrefix . 'content' ]
-			);
-
-			$this->save();
 		}
 
 		parent::processAfterEdit($values);
-	} */
+	}
 
 }
