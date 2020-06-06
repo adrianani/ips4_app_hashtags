@@ -16,9 +16,12 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			$member = \IPS\Member::loggedIn();
 		}
 
+		$obj = parent::create($item, $comment, $first, $guestName, $incrementPostCount, $member, $time, $ipAddress, $hiddenStatus);
+		$columnContent = static::$databaseColumnMap['content'];
+		$columnId = static::$databaseColumnId;
 		$comment = preg_replace_callback(
 			'/(^|\s)(#(([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+)))/iu',
-			function( $matches ) use ( $item, $member ) {
+			function( $matches ) use ( $item, $member, $columnId, $obj ) {
 				$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 				$itemColumnId = $item::$databaseColumnId;
 
@@ -29,8 +32,10 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 						'meta_id' => $item->$itemColumnId,
 						'meta_app' => $item::$application,
 						'meta_module' => $item::$module,
-						'meta_parent_id' => $item->container()->_id,
 						'meta_member_id' => $member->member_id,
+						'meta_node_id' => $item->container()->_id,
+						'meta_item_id' => $item->$itemColumnId,
+						'meta_comment_id' => $obj->$columnId,
 						'created' => time(),
 					]
 				);
@@ -40,7 +45,11 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			$comment
 		);
 
-		return parent::create($item, $comment, $first, $guestName, $incrementPostCount, $member, $time, $ipAddress, $hiddenStatus);
+		$obj->$columnContent = $comment;
+
+		$obj->save();
+
+		return $obj;
 	}
 
 }
