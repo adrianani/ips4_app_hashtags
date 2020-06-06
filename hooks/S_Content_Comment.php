@@ -20,15 +20,15 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 		$columnContent = static::$databaseColumnMap['content'];
 		$columnId = static::$databaseColumnId;
 		$comment = preg_replace_callback(
-			'/(^|\s)(<a (([a-zA-Z]+)=(\u0027|\u0022)([^\u0022]*|[^\u0027]*)(\u0027|\u0022)*)>)?(#([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+))(<\/a>)?/iu',
+			'/(^|\b|\s)(<a href="([<>\/.?=&_a-zA-Z]+)" rel="">)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/a>)?(|\b|\s|!|\?|\.|,|$)/iu',
 			function( $matches ) use ( $item, $member, $columnId, $obj ) {
-				$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[9]);
+				$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[5]);
 				$itemColumnId = $item::$databaseColumnId;
 
 				\IPS\Db::i()->insert(
 					'hashtags_hashtags',
 					[
-						'hashtag' => $matches[9],
+						'hashtag' => $matches[5],
 						'meta_item_id' => $item->$itemColumnId,
 						'meta_app' => $item::$application,
 						'meta_module' => $item::$module,
@@ -39,7 +39,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 					]
 				);
 
-				return "{$matches[1]}<a href='{$url}'>{$matches[8]}</a>";
+				return "{$matches[1]}<a href='{$url}'>{$matches[4]}</a>{$matches[8]}";
 			},
 			$comment
 		);
@@ -61,14 +61,14 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 		$columnId = static::$databaseColumnId;
 
 		$newContent = preg_replace_callback( 
-			'/(^|\s)(<a (([a-zA-Z]+)=(\u0027|\u0022)([^\u0022]*|[^\u0027]*)(\u0027|\u0022)*)>)?(#([a-zA-Z]([\w]+)|([0-9]+)[a-zA-Z]+))(<\/a>)?/iu',
+			'/(^|\b|\s)(<a href="([<>\/.?=&_a-zA-Z]+)" rel="">)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/a>)?(|\b|\s|!|\?|\.|,|$)/iu',
 			function( $matches ) use ( $node, $author, $item, $itemColumnId, $columnId ){
-				$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[9]);
+				$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[5]);
 
-				$tagInserts[] = \IPS\Db::i()->insert(
+				\IPS\Db::i()->insert(
 					'hashtags_hashtags',
 					[
-						'hashtag' => $matches[9],
+						'hashtag' => $matches[5],
 						'meta_app' => $item::$application,
 						'meta_module' => $item::$module,
 						'meta_member_id' => $author,
@@ -79,7 +79,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 					]
 				);
 
-				return "{$matches[1]}<a href='{$url}'>{$matches[8]}</a>";
+				return "{$matches[1]}<a href='{$url}'>{$matches[4]}</a>{$matches[8]}";
 			}, 
 			$newContent
 		);
