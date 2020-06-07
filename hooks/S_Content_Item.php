@@ -17,15 +17,15 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 
 			if( isset( static::$databaseColumnMap['content'] ) ) {
 				$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ] = preg_replace_callback( 
-					'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+					'/(^|\s|\B)(#((?:[^\x00-\x7F]|\w)+))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
 					function( $matches ) use ( $container, $tagInserts ){
-						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
+						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 						$member = \IPS\Member::loggedIn();
 		
 						$tagInserts[] = \IPS\Db::i()->insert(
 							'hashtags_hashtags',
 							[
-								'hashtag' => $matches[6],
+								'hashtag' => $matches[3],
 								'meta_app' => static::$application,
 								'meta_module' => static::$module,
 								'meta_member_id' => $member->member_id,
@@ -33,12 +33,8 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 								'created' => time(),
 							]
 						);
-		
-						if( $matches[3] === 'a' ) {
-							return "{$matches[1]}<a href='{$url}'>{$matches[5]}</a>{$matches[10]}";
-						} else {
-							return "{$matches[1]}{$matches[2]}<a href='{$url}'>{$matches[5]}</a>{$matches[8]}{$matches[10]}";
-						}
+
+						return !empty($matches[4]) ? "{$matches[2]}{$matches[4]}</a>" : "{$matches[1]}<a href='{$url}'>{$matches[2]}</a>";
 					}, 
 					$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ]
 				);
@@ -86,14 +82,14 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 				$columnContent = static::$databaseColumnMap['content'];
 
 				$this->$columnContent = preg_replace_callback( 
-					'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+					'/(^|\s|\B)(#((?:[^\x00-\x7F]|\w)+))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
 					function( $matches ) use ( $node, $author, $columnId ){
-						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
+						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 		
 						\IPS\Db::i()->insert(
 							'hashtags_hashtags',
 							[
-								'hashtag' => $matches[6],
+								'hashtag' => $matches[3],
 								'meta_app' => static::$application,
 								'meta_module' => static::$module,
 								'meta_member_id' => $author,
@@ -102,12 +98,8 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 								'created' => time(),
 							]
 						);
-		
-						if( $matches[3] === 'a' ) {
-							return "{$matches[1]}<a href='{$url}'>{$matches[5]}</a>{$matches[10]}";
-						} else {
-							return "{$matches[1]}{$matches[2]}<a href='{$url}'>{$matches[5]}</a>{$matches[8]}{$matches[10]}";
-						}
+
+						return !empty($matches[4]) ? "{$matches[2]}{$matches[4]}</a>" : "{$matches[1]}<a href='{$url}'>{$matches[2]}</a>";
 					}, 
 					$values[ static::$formLangPrefix . $columnContent ]
 				);
@@ -132,14 +124,14 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 			$commentColumnId = $comment::$databaseColumnId;
 
 			$values[ static::$formLangPrefix . 'content' ] = preg_replace_callback( 
-				'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+				'/(^|\s|\B)(#((?:[^\x00-\x7F]|\w)+))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
 				function( $matches ) use ( $author, $node, $columnId, $comment, $commentColumnId ) {
-					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
+					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 
 					\IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
-							'hashtag' => $matches[6],
+							'hashtag' => $matches[3],
 							'meta_app' => static::$application,
 							'meta_module' => static::$module,
 							'meta_member_id' => $author,
@@ -150,11 +142,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 						]
 					);
 
-					if( $matches[3] === 'a' ) {
-						return "{$matches[1]}<a href='{$url}'>{$matches[5]}</a>{$matches[10]}";
-					} else {
-						return "{$matches[1]}{$matches[2]}<a href='{$url}'>{$matches[5]}</a>{$matches[8]}{$matches[10]}";
-					}
+					return !empty($matches[4]) ? "{$matches[2]}{$matches[4]}</a>" : "{$matches[1]}<a href='{$url}'>{$matches[2]}</a>";
 				}, 
 				$values[ static::$formLangPrefix . 'content' ]
 			);
