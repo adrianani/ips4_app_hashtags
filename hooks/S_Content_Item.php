@@ -17,7 +17,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 
 			if( isset( static::$databaseColumnMap['content'] ) ) {
 				$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ] = preg_replace_callback( 
-					'/(^|\b|\s|>)(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+					'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
 					function( $matches ) use ( $container, $tagInserts ){
 						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
 						$member = \IPS\Member::loggedIn();
@@ -86,7 +86,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 				$columnContent = static::$databaseColumnMap['content'];
 
 				$this->$columnContent = preg_replace_callback( 
-					'/(^|\b|\s|>)(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+					'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
 					function( $matches ) use ( $node, $author, $columnId ){
 						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
 		
@@ -132,7 +132,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 			$commentColumnId = $comment::$databaseColumnId;
 
 			$values[ static::$formLangPrefix . 'content' ] = preg_replace_callback( 
-				'/(^|\b|\s|>)(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+				'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
 				function( $matches ) use ( $author, $node, $columnId, $comment, $commentColumnId ) {
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
 
@@ -161,6 +161,89 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 		}
 
 		parent::processAfterEdit($values);
+	}
+
+	public function delete() {
+
+		if( $this instanceof \IPS\Content\Searchable ) {
+			$columnId = static::$databaseColumnId;
+			$node = $this->container();
+			$columnAuthor = static::$databaseColumnMap['author'];
+			$author = $this->$columnAuthor;
+
+			\IPS\Db::i()->delete(
+				'hashtags_hashtags',
+				[
+					"meta_item_id=? AND meta_app=? AND meta_module=? AND meta_member_id=? AND meta_node_id=?",
+					$this->$columnId,
+					static::$application,
+					static::$module,
+					$author,
+					$node->_id,
+				]
+			);
+		}
+
+		parent::delete();
+	}
+
+	public function move( \IPS\Node\Model $container, $keepLink=FALSE ) {
+
+		if( $this instanceof \IPS\Content\Searchable ) {
+
+			$columnId = static::$databaseColumnId;
+			$node = $this->container();
+			$columnAuthor = static::$databaseColumnMap['author'];
+			$author = $this->$columnAuthor;
+
+			\IPS\Db::i()->update(
+				'hashtags_hashtags',
+				[
+					'meta_node_id' => $container->{$container::$databaseColumnId}
+				],
+				[
+					"meta_item_id=? AND meta_app=? AND meta_module=? AND meta_member_id=? AND meta_node_id=?",
+					$this->$columnId,
+					static::$application,
+					static::$module,
+					$author,
+					$node->{$node::$databaseColumnId},
+				]
+			);
+		}
+
+		parent::move( $container, $keepLink );
+	}
+
+	public function mergeIn( array $items, $keepLinks=FALSE ) {
+		
+		if( $this instanceof \IPS\Content\Searchable ) {
+	
+			$columnId = static::$databaseColumnId;
+			$node = $this->container();
+			$columnAuthor = static::$databaseColumnMap['author'];
+			$author = $this->$columnAuthor;
+
+			foreach( $items as $item ) {
+				\IPS\Db::i()->update(
+					'hashtags_hashtags',
+					[
+						'meta_item_id' => $this->$columnId,
+					],
+					[
+						"meta_item_id=? AND meta_app=? AND meta_module=? AND meta_member_id=? AND meta_node_id=?",
+						$item->{$item::$databaseColumnId},
+						static::$application,
+						static::$module,
+						$author,
+						$node->_id,
+					]
+				);
+			}
+
+		}
+
+		parent::mergeIn($items, $keepLinks);
 	}
 
 }

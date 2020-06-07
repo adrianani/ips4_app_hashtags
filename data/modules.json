@@ -1,1 +1,8 @@
-[]
+{
+    "admin": {
+        "overview": {
+            "default_controller": "",
+            "protected": false
+        }
+    }
+}

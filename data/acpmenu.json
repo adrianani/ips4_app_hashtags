@@ -1,1 +1,10 @@
-[]
+{
+    "overview": {
+        "dashboard": {
+            "tab": "hashtags",
+            "controller": "dashboard",
+            "do": "",
+            "restriction": "dashboard_manage"
+        }
+    }
+}

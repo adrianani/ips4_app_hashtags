@@ -22,7 +22,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			$columnContent = static::$databaseColumnMap['content'];
 			$columnId = static::$databaseColumnId;
 			$comment = preg_replace_callback(
-				'/(^|\b|\s|>)(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+				'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
 				function( $matches ) use ( $item, $member, $columnId, $obj ) {
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
 					$itemColumnId = $item::$databaseColumnId;
@@ -82,7 +82,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			);
 
 			$newContent = preg_replace_callback( 
-				'/(^|\b|\s|>)(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
+				'/([^\p{L}])(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+([0-9_]*)|(?:[0-9_]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
 				function( $matches ) use ( $node, $author, $item, $itemColumnId, $columnId ){
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
 					
@@ -111,6 +111,33 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 		}
 
 		parent::editContents( $newContent );
+	}
+
+	public function delete() {
+
+		if( $this instanceof \IPS\Content\Searchable ) {
+			$columnAuthor = static::$databaseColumnMap['author'];
+			$author = $this->$columnAuthor;
+			$item = $this->item();
+			$node = $item->container();
+			$itemColumnId = $item::$databaseColumnId;
+			$columnId = static::$databaseColumnId;
+
+			\IPS\Db::i()->delete(
+				'hashtags_hashtags',
+				[
+					"meta_item_id=? AND meta_app=? AND meta_module=? AND meta_member_id=? AND meta_node_id=? AND meta_comment_id=?",
+					$item->$itemColumnId,
+					$item::$application,
+					$item::$module,
+					$author,
+					$node->_id,
+					$this->$columnId,
+				]
+			);
+		}
+
+		parent::delete();
 	}
 
 }
