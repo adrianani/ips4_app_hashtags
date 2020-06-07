@@ -22,15 +22,15 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			$columnContent = static::$databaseColumnMap['content'];
 			$columnId = static::$databaseColumnId;
 			$comment = preg_replace_callback(
-				'/(^|\b|\s)(<a href=(\x{0022}|\x{0027})([<>\/.?=;:&_a-zA-Z]+)(\x{0022}|\x{0027})( rel=(\x{0022}|\x{0027})(\x{0022}|\x{0027}))?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/a>)?(|\b|\s|!|\?|\.|,|$)/iu',
+				'/(^|\b|\s|>)(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
 				function( $matches ) use ( $item, $member, $columnId, $obj ) {
-					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[10]);
+					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
 					$itemColumnId = $item::$databaseColumnId;
 
 					\IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
-							'hashtag' => $matches[10],
+							'hashtag' => $matches[6],
 							'meta_item_id' => $item->$itemColumnId,
 							'meta_app' => $item::$application,
 							'meta_module' => $item::$module,
@@ -40,8 +40,11 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 							'created' => time(),
 						]
 					);
-
-					return "{$matches[1]}<a href='{$url}'>{$matches[9]}</a>{$matches[13]}";
+					if( $matches[3] === 'a' ) {
+						return "{$matches[1]}<a href='{$url}'>{$matches[5]}</a>{$matches[10]}";
+					} else {
+						return "{$matches[1]}{$matches[2]}<a href='{$url}'>{$matches[5]}</a>{$matches[8]}{$matches[10]}";
+					}
 				},
 				$comment
 			);
@@ -79,14 +82,14 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			);
 
 			$newContent = preg_replace_callback( 
-				'/(^|\b|\s)(<a href=(\x{0022}|\x{0027})([<>\/.?=;:&_a-zA-Z]+)(\x{0022}|\x{0027})( rel=(\x{0022}|\x{0027})(\x{0022}|\x{0027}))?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/a>)?(|\b|\s|!|\?|\.|,|$)/iu',
+				'/(^|\b|\s|>)(<(a|b|i|u|s|em|strong)([\sa-z0-9=\x{0022}\x{0027}:\/\.?&\-_]+)?>)?(#([\p{L}_]+|([0-9]*)[\p{L}_]+))(<\/(a|b|i|u|s|em|strong)>)?(<\/|\b|\s|!|\?|\.|,|$)/iu',
 				function( $matches ) use ( $node, $author, $item, $itemColumnId, $columnId ){
-					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[10]);
+					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[6]);
 					
 					\IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
-							'hashtag' => $matches[10],
+							'hashtag' => $matches[6],
 							'meta_app' => $item::$application,
 							'meta_module' => $item::$module,
 							'meta_member_id' => $author,
@@ -97,7 +100,11 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 						]
 					);
 
-					return "{$matches[1]}<a href='{$url}'>{$matches[9]}</a>{$matches[13]}";
+					if( $matches[3] === 'a' ) {
+						return "{$matches[1]}<a href='{$url}'>{$matches[5]}</a>{$matches[10]}";
+					} else {
+						return "{$matches[1]}{$matches[2]}<a href='{$url}'>{$matches[5]}</a>{$matches[8]}{$matches[10]}";
+					}
 				}, 
 				$newContent
 			);
