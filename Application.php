@@ -17,4 +17,8 @@ namespace IPS\hashtags;
 class _Application extends \IPS\Application
 {
 	
+	public function get__icon() {
+		return 'hashtag';
+	}
+
 }

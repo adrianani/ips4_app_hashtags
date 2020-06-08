@@ -22,7 +22,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			$columnContent = static::$databaseColumnMap['content'];
 			$columnId = static::$databaseColumnId;
 			$comment = preg_replace_callback(
-				'/(^|\s|\B)(#(\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
+				'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 				function( $matches ) use ( $item, $member, $columnId, $obj ) {
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 					$itemColumnId = $item::$databaseColumnId;
@@ -79,7 +79,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			);
 
 			$newContent = preg_replace_callback( 
-				'/(^|\s|\B)(#(\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
+				'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 				function( $matches ) use ( $node, $author, $item, $itemColumnId, $columnId ){
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 					
@@ -140,10 +140,10 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 
 		if( !empty( $data[ static::$databaseColumnMap['content'] ] ) ) {
 			$data[ static::$databaseColumnMap['content'] ] = preg_replace_callback( 
-				'/(^|\s|\B)(#(\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
+				'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 				function( $matches ) use ( $node, $author, $item, $itemColumnId, $columnId, &$insertIds ){
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
-					
+					\IPS\Log::log($matches, 'test');
 					$insertIds[] = \IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
@@ -157,8 +157,6 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 							'created' => time(),
 						]
 					);
-
-					\IPS\Log::log($matches, 'WTF');
 
 					return !empty($matches[4]) ? "{$matches[2]}{$matches[5]}</a>" : "{$matches[1]}<a href='{$url}'>{$matches[2]}</a>";
 				}, 

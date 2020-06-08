@@ -1,0 +1,12 @@
+.hashtagsStat {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.hashtagsStat .hashtagsStat_number {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 24px;
+  font-weight: 300;
+  font-weight: bold;
+}
+/*# sourceMappingURL=hashtags.css.map */

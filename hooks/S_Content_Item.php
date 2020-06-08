@@ -17,7 +17,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 
 			if( isset( static::$databaseColumnMap['content'] ) ) {
 				$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ] = preg_replace_callback( 
-					'/(^|\s|\B)(#(\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
+					'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 					function( $matches ) use ( $container, $tagInserts ){
 						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 						$member = \IPS\Member::loggedIn();
@@ -82,7 +82,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 				$columnContent = static::$databaseColumnMap['content'];
 
 				$this->$columnContent = preg_replace_callback( 
-					'/(^|\s|\B)(#(\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
+					'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 					function( $matches ) use ( $node, $author, $columnId ){
 						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 		
@@ -124,7 +124,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 			$commentColumnId = $comment::$databaseColumnId;
 
 			$values[ static::$formLangPrefix . 'content' ] = preg_replace_callback( 
-				'/(^|\s|\B)(#(\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/a>((?:[^\x00-\x7F]|\w)+))?/iu',
+				'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 				function( $matches ) use ( $author, $node, $columnId, $comment, $commentColumnId ) {
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 

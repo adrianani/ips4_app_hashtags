@@ -1,0 +1,49 @@
+<ips:template parameters="$quickStats, $chart" />
+<div class="ipsBox ipsSpacer_bottom">
+	<div class="ipsBox_titleBar">
+		{lang="hashtags_general_statistics"}
+	</div>
+	<div class="ipsColumns">
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				{$quickStats['uniq_hashtags']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="all_time_uniq_hashtags"}
+			</div>
+		</div>
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				#{$quickStats['ever_hashtag']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="all_time_most_used_hashtag" pluralize="$quickStats['ever_hashtag_use']"}
+			</div>
+		</div>
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				{$quickStats['today_hashtags']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="today_uniq_hashtags"}
+			</div>
+		</div>
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				#{$quickStats['today_hashtag']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="today_most_used_hashtag" pluralize="$quickStats['today_hashtag_use']"}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="ipsBox ipsSpacer_bottom">
+	<div class="ipsBox_titleBar">
+		{lang="hashtags_usage_stats"}
+	</div>
+	<div class="ipsPad">
+		{$chart|raw}
+	</div>
+</div>
