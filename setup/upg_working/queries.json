@@ -121,7 +121,7 @@
                         "length": 20,
                         "decimals": null,
                         "values": null,
-                        "allow_null": false,
+                        "allow_null": true,
                         "default": "0",
                         "comment": "",
                         "unsigned": true,
