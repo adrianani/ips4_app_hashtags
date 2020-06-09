@@ -143,7 +143,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 				'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 				function( $matches ) use ( $node, $author, $item, $itemColumnId, $columnId, &$insertIds ){
 					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
-					\IPS\Log::log($matches, 'test');
+					
 					$insertIds[] = \IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
