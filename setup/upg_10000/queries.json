@@ -1,0 +1,211 @@
+{
+    "1": {
+        "method": "createTable",
+        "params": [
+            {
+                "name": "hashtags_hashtags",
+                "columns": {
+                    "id": {
+                        "name": "id",
+                        "type": "BIGINT",
+                        "length": "20",
+                        "unsigned": true,
+                        "zerofill": false,
+                        "binary": false,
+                        "allow_null": false,
+                        "default": null,
+                        "auto_increment": true,
+                        "comment": "ID Number"
+                    },
+                    "hashtag": {
+                        "name": "hashtag",
+                        "type": "CHAR",
+                        "length": 140,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": false,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    },
+                    "meta_app": {
+                        "name": "meta_app",
+                        "type": "VARCHAR",
+                        "length": 200,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": false,
+                        "default": "",
+                        "comment": "",
+                        "unsigned": false,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    },
+                    "meta_module": {
+                        "name": "meta_module",
+                        "type": "VARCHAR",
+                        "length": 200,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": "",
+                        "comment": "",
+                        "unsigned": false,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    },
+                    "meta_member_id": {
+                        "name": "meta_member_id",
+                        "type": "BIGINT",
+                        "length": 20,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": true,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    },
+                    "created": {
+                        "name": "created",
+                        "type": "INT",
+                        "length": 10,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": true,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    },
+                    "meta_node_id": {
+                        "name": "meta_node_id",
+                        "type": "BIGINT",
+                        "length": 20,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": true,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    },
+                    "meta_item_id": {
+                        "name": "meta_item_id",
+                        "type": "BIGINT",
+                        "length": 20,
+                        "decimals": null,
+                        "values": [],
+                        "allow_null": true,
+                        "default": null,
+                        "comment": "",
+                        "unsigned": true,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    },
+                    "meta_comment_id": {
+                        "name": "meta_comment_id",
+                        "type": "BIGINT",
+                        "length": 20,
+                        "decimals": null,
+                        "values": null,
+                        "allow_null": true,
+                        "default": "0",
+                        "comment": "",
+                        "unsigned": true,
+                        "zerofill": false,
+                        "auto_increment": false,
+                        "binary": false
+                    }
+                },
+                "indexes": {
+                    "PRIMARY": {
+                        "type": "primary",
+                        "name": "PRIMARY",
+                        "columns": [
+                            "id"
+                        ],
+                        "length": [
+                            null
+                        ]
+                    },
+                    "meta_member_id": {
+                        "type": "key",
+                        "name": "meta_member_id",
+                        "columns": [
+                            "meta_member_id"
+                        ],
+                        "length": [
+                            null
+                        ]
+                    },
+                    "meta_app": {
+                        "type": "key",
+                        "name": "meta_app",
+                        "columns": [
+                            "meta_app",
+                            "meta_module",
+                            "meta_id"
+                        ],
+                        "length": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "hashtag": {
+                        "type": "key",
+                        "name": "hashtag",
+                        "columns": [
+                            "hashtag"
+                        ],
+                        "length": [
+                            null
+                        ]
+                    },
+                    "created": {
+                        "type": "key",
+                        "name": "created",
+                        "columns": [
+                            "created"
+                        ],
+                        "length": [
+                            null
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    "2": {
+        "method": "changeIndex",
+        "params": [
+            "meta_app",
+            "meta_app",
+            {
+                "type": "key",
+                "name": "meta_app",
+                "length": [
+                    85,
+                    85
+                ],
+                "columns": [
+                    "meta_app",
+                    "meta_module"
+                ]
+            }
+        ]
+    }
+}

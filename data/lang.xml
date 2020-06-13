@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language>
+ <app key="hashtags" version="10001">
+  <word key="__app_hashtags" js="0">Hashtags</word>
+  <word key="menutab__hashtags_icon" js="0">hashtag</word>
+  <word key="menutab__hashtags" js="0">Hashtags</word>
+  <word key="menu__hashtags_overview" js="0">Overview</word>
+  <word key="menu__hashtags_overview_dashboard" js="0">Dashboard</word>
+  <word key="all_time_uniq_hashtags" js="0">All-Time Unique Hashtags</word>
+  <word key="all_time_most_used_hashtag" js="0"><![CDATA[All-Time Most Used Hashtag</br>which has been used {# [1:time][?:times]}]]></word>
+  <word key="today_uniq_hashtags" js="0">Today's Unique Hashtags</word>
+  <word key="today_most_used_hashtag" js="0"><![CDATA[Today's Most Used Hashtag</br>which has been used {# [1:time][?:times]}]]></word>
+  <word key="hashtags_general_statistics" js="0">General Statistics</word>
+  <word key="hashtags_usage_stats" js="0">Hashtags usage</word>
+  <word key="hashtags_stats_used_hashtags" js="0">Used hashtags across all apps</word>
+  <word key="hashtags_stats_used_app_hashtags" js="0">Used hashtags across </word>
+  <word key="hashtagsLinkWarning" js="1">Hashtag has another link</word>
+  <word key="hashtagsLinkWarningSubtext" js="1"><![CDATA[The hashtag you want to filter content by was linked to another url by it's author. Press <strong>Yes</strong> to open the other url in a new tab and the search in this tab, <strong>No</strong> to continue with the search ignoring the other link or <strong>Cancel</strong> to dismiss everything.]]></word>
+  <word key="hashtagsFilterBy" js="1">Search content using #{{hashtag}}</word>
+ </app>
+</language>

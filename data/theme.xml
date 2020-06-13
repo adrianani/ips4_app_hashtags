@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<theme name="Default" author_name="Invision Power Services, Inc" author_url="https://www.invisioncommunity.com">
+ <template template_group="overview" template_name="dashboard" template_data="$quickStats, $chart" template_location="admin" template_app="hashtags"><![CDATA[<div class="ipsBox ipsSpacer_bottom">
+	<div class="ipsBox_titleBar">
+		{lang="hashtags_general_statistics"}
+	</div>
+	<div class="ipsColumns">
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				{$quickStats['uniq_hashtags']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="all_time_uniq_hashtags"}
+			</div>
+		</div>
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				#{$quickStats['ever_hashtag']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="all_time_most_used_hashtag" pluralize="$quickStats['ever_hashtag_use']"}
+			</div>
+		</div>
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				{$quickStats['today_hashtags']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="today_uniq_hashtags"}
+			</div>
+		</div>
+		<div class="ipsColumn hashtagsStat ipsPad">
+			<div class="hashtagsStat_number">
+				#{$quickStats['today_hashtag']}
+			</div>
+			<div class="hashtagsStat_subtext ipsType_minorHeading">
+				{lang="today_most_used_hashtag" pluralize="$quickStats['today_hashtag_use']"}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="ipsBox ipsSpacer_bottom">
+	<div class="ipsBox_titleBar">
+		{lang="hashtags_usage_stats"}
+	</div>
+	<div class="ipsPad">
+		{$chart|raw}
+	</div>
+</div>]]></template>
+ <css css_location="admin" css_app="hashtags" css_attributes="" css_path="." css_name="hashtags.css">.hashtagsStat {
+  font-family: &quot;HelveticaNeue-Light&quot;, &quot;Helvetica Neue Light&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+}
+
+.hashtagsStat .hashtagsStat_number {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 24px;
+  font-weight: 300;
+  font-weight: bold;
+}
+/*# sourceMappingURL=hashtags.css.map */</css>
+ <css css_location="front" css_app="hashtags" css_attributes="" css_path="." css_name="hashtags.css">span[data-hashtag] {
+  color: {theme=&quot;link&quot;};
+  font-weight: bold;
+}
+
+span[data-hashtag]:hover {
+  color: {theme=&quot;link_hover&quot;};
+  cursor: pointer;
+}
+/*# sourceMappingURL=hashtags.css.map */</css>
+</theme>

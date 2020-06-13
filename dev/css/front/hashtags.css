@@ -1,0 +1,10 @@
+span[data-hashtag] {
+  color: {theme="link"};
+  font-weight: bold;
+}
+
+span[data-hashtag]:hover {
+  color: {theme="link_hover"};
+  cursor: pointer;
+}
+/*# sourceMappingURL=hashtags.css.map */

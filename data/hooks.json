@@ -6,5 +6,17 @@
     "S_Content_Comment": {
         "type": "C",
         "class": "\\IPS\\Content\\Comment"
+    },
+    "S_Dispacher_Standard": {
+        "type": "C",
+        "class": "\\IPS\\Dispatcher\\Standard"
+    },
+    "S_Content_Search_Mysql_Query": {
+        "type": "C",
+        "class": "\\IPS\\Content\\Search\\Mysql\\Query"
+    },
+    "A_Core_Front_Search_search": {
+        "type": "C",
+        "class": "\\IPS\\core\\modules\\front\\search\\search"
     }
 }

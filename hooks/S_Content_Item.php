@@ -19,22 +19,24 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 				$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ] = preg_replace_callback( 
 					'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 					function( $matches ) use ( $container, $tagInserts ){
-						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
+						
 						$member = \IPS\Member::loggedIn();
 		
 						$tagInserts[] = \IPS\Db::i()->insert(
 							'hashtags_hashtags',
 							[
-								'hashtag' => $matches[3],
+								'hashtag' => $matches['hashtag2'],
 								'meta_app' => static::$application,
 								'meta_module' => static::$module,
 								'meta_member_id' => $member->member_id,
-								'meta_node_id' => $container->_id,
+								'meta_node_id' => $container->{$container::$databaseColumnId},
 								'created' => time(),
 							]
 						);
 
-						return !empty($matches[4]) ? "{$matches[2]}{$matches[4]}</a>" : "{$matches[1]}<a href='{$url}'>{$matches[2]}</a>";
+						$hashtagId = end($tagInserts);
+
+						return "{$matches[1]}<span data-hashtag=\"{$matches['hashtag2']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag2']}</span>{$matches[9]}";
 					}, 
 					$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ]
 				);
@@ -81,15 +83,14 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 			if(isset( static::$databaseColumnMap['content'] )) {
 				$columnContent = static::$databaseColumnMap['content'];
 
-				$this->$columnContent = preg_replace_callback( 
+				$values[ static::$formLangPrefix . $columnContent ] = preg_replace_callback( 
 					'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
-					function( $matches ) use ( $node, $author, $columnId ){
-						$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
+					function( $matches ) use ( $node, $author, $columnId ) {
 		
-						\IPS\Db::i()->insert(
+						$hashtagId = \IPS\Db::i()->insert(
 							'hashtags_hashtags',
 							[
-								'hashtag' => $matches[3],
+								'hashtag' => $matches['hashtag2'],
 								'meta_app' => static::$application,
 								'meta_module' => static::$module,
 								'meta_member_id' => $author,
@@ -99,10 +100,12 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 							]
 						);
 
-						return !empty($matches[4]) ? "{$matches[2]}{$matches[4]}</a>" : "{$matches[1]}<a href='{$url}'>{$matches[2]}</a>";
+						return "{$matches[1]}<span data-hashtag=\"{$matches['hashtag2']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag2']}</span>{$matches[9]}";
 					}, 
 					$values[ static::$formLangPrefix . $columnContent ]
 				);
+
+				$this->$columnContent = $values[ static::$formLangPrefix . $columnContent ];
 
 			}
 		}
@@ -126,12 +129,11 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 			$values[ static::$formLangPrefix . 'content' ] = preg_replace_callback( 
 				'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
 				function( $matches ) use ( $author, $node, $columnId, $comment, $commentColumnId ) {
-					$url = \IPS\Http\Url::internal('app=hashtags&module=hashtags&controller=search&hashtag=' . $matches[3]);
 
-					\IPS\Db::i()->insert(
+					$hashtagId = \IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
-							'hashtag' => $matches[3],
+							'hashtag' => $matches['hashtag2'],
 							'meta_app' => static::$application,
 							'meta_module' => static::$module,
 							'meta_member_id' => $author,
@@ -142,7 +144,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 						]
 					);
 
-					return !empty($matches[4]) ? "{$matches[2]}{$matches[4]}</a>" : "{$matches[1]}<a href='{$url}'>{$matches[2]}</a>";
+					return "{$matches[1]}<span data-hashtag=\"{$matches['hashtag2']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag2']}</span>{$matches[9]}";
 				}, 
 				$values[ static::$formLangPrefix . 'content' ]
 			);
@@ -155,19 +157,14 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 
 		if( $this instanceof \IPS\Content\Searchable ) {
 			$columnId = static::$databaseColumnId;
-			$node = $this->container();
-			$columnAuthor = static::$databaseColumnMap['author'];
-			$author = $this->$columnAuthor;
 
 			\IPS\Db::i()->delete(
 				'hashtags_hashtags',
 				[
-					"meta_item_id=? AND meta_app=? AND meta_module=? AND meta_member_id=? AND meta_node_id=?",
+					"meta_item_id=? AND meta_app=? AND meta_module=?",
 					$this->$columnId,
 					static::$application,
-					static::$module,
-					$author,
-					$node->_id,
+					static::$module
 				]
 			);
 		}

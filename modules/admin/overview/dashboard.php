@@ -39,11 +39,11 @@ class _dashboard extends \IPS\Dispatcher\Controller
 		$todayMostUsed = \IPS\Db::i()->query("SELECT hashtag, COUNT(*) AS occurences FROM hashtags_hashtags WHERE DATE_FORMAT(FROM_UNIXTIME(created), '%Y-%m-%d') = CURDATE() GROUP BY hashtag ORDER BY occurences DESC LIMIT 1")->fetch_assoc();
 		$quickStats = [
 			'uniq_hashtags' => \IPS\Db::i()->query("SELECT COUNT(*) as uniq FROM (SELECT DISTINCT created FROM hashtags_hashtags) unique_hashtags")->fetch_assoc()['uniq'],
-			'ever_hashtag' => $allTimeMostUsed['hashtag'],
-			'ever_hashtag_use' => $allTimeMostUsed['occurences'],
+			'ever_hashtag' => !empty($allTimeMostUsed['hashtag']) ? $allTimeMostUsed['hashtag'] : 0,
+			'ever_hashtag_use' => !empty($allTimeMostUsed['occurences']) ? $allTimeMostUsed['occurences'] : 0,
 			'today_hashtags' => \IPS\Db::i()->query("SELECT COUNT(*) AS today FROM (SELECT DISTINCT created AS created_date FROM hashtags_hashtags WHERE DATE_FORMAT(FROM_UNIXTIME(created), '%Y-%m-%d') = CURDATE()) today_hashtags")->fetch_assoc()['today'],
-			'today_hashtag' => $todayMostUsed['hashtag'],
-			'today_hashtag_use' => $todayMostUsed['occurences'],
+			'today_hashtag' => !empty($todayMostUsed['hashtag']) ? $todayMostUsed['hashtag'] : 0,
+			'today_hashtag_use' => !empty($todayMostUsed['occurences']) ? $todayMostUsed['occurences'] : 0,
 		];
 
 		$chart = new \IPS\Helpers\Chart\Database(
@@ -60,7 +60,7 @@ class _dashboard extends \IPS\Dispatcher\Controller
 				'areaOpacity'		=> 0.4
 			],
 			'AreaChart',
-			'monthly',
+			'monthly'
 		);
 
 		$chart->groupBy = 'meta_app';
@@ -96,7 +96,7 @@ class _dashboard extends \IPS\Dispatcher\Controller
 				'areaOpacity'		=> 0.4
 			],
 			'AreaChart',
-			'monthly',
+			'monthly'
 		);
 
 		$chart->groupBy = 'meta_app';

@@ -1,1 +1,8 @@
-{"application_title":"Hashtags","app_author":"Adrian Ani","app_directory":"hashtags","app_protected":false,"app_website":{"data":{"scheme":"https","host":"adrianani.github.io","port":null,"user":null,"pass":null,"path":null,"query":"","fragment":null},"queryString":[],"hiddenQueryString":[],"isInternal":false,"isFriendly":false},"app_update_check":""}
+{
+    "application_title": "Hashtags",
+    "app_author": "Adrian Ani",
+    "app_directory": "hashtags",
+    "app_protected": 0,
+    "app_website": null,
+    "app_update_check": ""
+}
