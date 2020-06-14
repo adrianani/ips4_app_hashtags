@@ -17,7 +17,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 
 			if( isset( static::$databaseColumnMap['content'] ) ) {
 				$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ] = preg_replace_callback( 
-					'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
+					'/(?<start>^|\s|\B)((?!(#[a-fA-F0-9]{3})(\W|$)|(#[a-fA-F0-9]{6})(\W|$))#(?<hashtag>\w*(?:[^\x00-\x7F]|\pL)+\w*))(?<end>$|\s|\b)/iu',
 					function( $matches ) use ( $container, $tagInserts ){
 						
 						$member = \IPS\Member::loggedIn();
@@ -25,7 +25,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 						$tagInserts[] = \IPS\Db::i()->insert(
 							'hashtags_hashtags',
 							[
-								'hashtag' => $matches['hashtag2'],
+								'hashtag' => $matches['hashtag'],
 								'meta_app' => static::$application,
 								'meta_module' => static::$module,
 								'meta_member_id' => $member->member_id,
@@ -36,7 +36,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 
 						$hashtagId = end($tagInserts);
 
-						return "{$matches[1]}<span data-hashtag=\"{$matches['hashtag2']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag2']}</span>{$matches[9]}";
+						return "{$matches['start']}<span data-hashtag=\"{$matches['hashtag']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag']}</span>{$matches['end']}";
 					}, 
 					$values[ static::$formLangPrefix . static::$databaseColumnMap['content'] ]
 				);
@@ -84,13 +84,13 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 				$columnContent = static::$databaseColumnMap['content'];
 
 				$values[ static::$formLangPrefix . $columnContent ] = preg_replace_callback( 
-					'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
+					'/(?<start>^|\s|\B)((?!(#[a-fA-F0-9]{3})(\W|$)|(#[a-fA-F0-9]{6})(\W|$))#(?<hashtag>\w*(?:[^\x00-\x7F]|\pL)+\w*))(?<end>$|\s|\b)/iu',
 					function( $matches ) use ( $node, $author, $columnId ) {
 		
 						$hashtagId = \IPS\Db::i()->insert(
 							'hashtags_hashtags',
 							[
-								'hashtag' => $matches['hashtag2'],
+								'hashtag' => $matches['hashtag'],
 								'meta_app' => static::$application,
 								'meta_module' => static::$module,
 								'meta_member_id' => $author,
@@ -100,7 +100,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 							]
 						);
 
-						return "{$matches[1]}<span data-hashtag=\"{$matches['hashtag2']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag2']}</span>{$matches[9]}";
+						return "{$matches['start']}<span data-hashtag=\"{$matches['hashtag']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag']}</span>{$matches['end']}";
 					}, 
 					$values[ static::$formLangPrefix . $columnContent ]
 				);
@@ -127,13 +127,13 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 			$commentColumnId = $comment::$databaseColumnId;
 
 			$values[ static::$formLangPrefix . 'content' ] = preg_replace_callback( 
-				'/(^|\s|\B)(<(?<span>span) data-hashtag="(?<hashtag1>\w*(?:[^\x00-\x7F]|\pL)+\w*)" data-hashtag-id=\"(?<id>\pN+)\">)?(#(?<hashtag2>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?($|\s|\b)/iu',
+				'/(?<start>^|\s|\B)((?!(#[a-fA-F0-9]{3})(\W|$)|(#[a-fA-F0-9]{6})(\W|$))#(?<hashtag>\w*(?:[^\x00-\x7F]|\pL)+\w*))(?<end>$|\s|\b)/iu',
 				function( $matches ) use ( $author, $node, $columnId, $comment, $commentColumnId ) {
 
 					$hashtagId = \IPS\Db::i()->insert(
 						'hashtags_hashtags',
 						[
-							'hashtag' => $matches['hashtag2'],
+							'hashtag' => $matches['hashtag'],
 							'meta_app' => static::$application,
 							'meta_module' => static::$module,
 							'meta_member_id' => $author,
@@ -144,7 +144,7 @@ abstract class hashtags_hook_S_Content_Item extends _HOOK_CLASS_
 						]
 					);
 
-					return "{$matches[1]}<span data-hashtag=\"{$matches['hashtag2']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag2']}</span>{$matches[9]}";
+					return "{$matches['start']}<span data-hashtag=\"{$matches['hashtag']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag']}</span>{$matches['end']}";
 				}, 
 				$values[ static::$formLangPrefix . 'content' ]
 			);

@@ -1,0 +1,29 @@
+<ips:template parameters="$hashtags, $title" />
+
+<h3 class="ipsWidget_title ipsType_reset">
+    {$title}
+</h3>
+<div class="ipsWidget ipsPad_half">
+    {{if empty($hashtags)}}
+        <div class="ipsPad">
+            <p class="ipsType_reset">
+                {lang="hashtags_trending_none"}
+            </p>
+        </div>
+    {{else}}
+        <div class="ipsDataList">
+            {{foreach $hashtags as $hashtag}}
+                <div class="ipsDataItem">
+                    <div class="ipsDataItem_main">
+                        <a href="{url='app=core&module=search&controller=search&hashtags='}{$hashtag['hashtag']}">
+                            <strong class='ipsType_large'>#{$hashtag['hashtag']}</strong>
+                        </a> <br />
+                        <span class='ipsType_light'>
+                            {lang="hashtags_trending_uses" pluralize="$hashtag['occurences']"}
+                        </span>
+                    </div>
+                </div>
+            {{endforeach}}
+        </div>
+    {{endif}}
+</div>

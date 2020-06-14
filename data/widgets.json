@@ -2,12 +2,11 @@
     "trendinghashtags": {
         "class": "\\IPS\\Widget\\StaticCache",
         "restrict": [
-            "sidebar",
-            "cms"
+            "sidebar"
         ],
         "default_area": "sidebar",
         "allow_reuse": true,
-        "menu_style": "menu",
+        "menu_style": "modal",
         "embeddable": true
     }
 }

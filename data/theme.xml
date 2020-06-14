@@ -48,6 +48,34 @@
 		{$chart|raw}
 	</div>
 </div>]]></template>
+ <template template_group="widgets" template_name="trendinghashtags" template_data="$hashtags" template_location="front" template_app="hashtags"><![CDATA[
+<h3 class="ipsWidget_title ipsType_reset">
+    {lang="hashtags_trending"}
+</h3>
+<div class="ipsWidget ipsPad_half">
+    {{if empty($hashtags)}}
+        <div class="ipsPad">
+            <p class="ipsType_reset">
+                {lang="hashtags_trending_none"}
+            </p>
+        </div>
+    {{else}}
+        <div class="ipsDataList">
+            {{foreach $hashtags as $hashtag}}
+                <div class="ipsDataItem">
+                    <div class="ipsDataItem_main">
+                        <a href="{url='app=core&module=search&controller=search&hashtags='}{$hashtag['hashtag']}">
+                            <strong class='ipsType_large'>#{$hashtag['hashtag']}</strong>
+                        </a> <br />
+                        <span class='ipsType_light'>
+                            {lang="hashtags_trending_uses" pluralize="$hashtag['occurences']"}
+                        </span>
+                    </div>
+                </div>
+            {{endforeach}}
+        </div>
+    {{endif}}
+</div>]]></template>
  <css css_location="admin" css_app="hashtags" css_attributes="" css_path="." css_name="hashtags.css">.hashtagsStat {
   font-family: &quot;HelveticaNeue-Light&quot;, &quot;Helvetica Neue Light&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
 }

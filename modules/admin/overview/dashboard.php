@@ -26,8 +26,6 @@ class _dashboard extends \IPS\Dispatcher\Controller
 	}
 
 	/**
-	 * SELECT hashtag, COUNT(*) AS occurences FROM hashtags_hashtags WHERE created >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 24 DAY_HOUR)) GROUP BY hashtag ORDER BY occurences DESC LIMIT 10;
-	 * 
 	 * @return	void
 	 */
 	protected function manage()
