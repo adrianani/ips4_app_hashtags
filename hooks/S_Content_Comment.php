@@ -22,7 +22,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 			$columnContent = static::$databaseColumnMap['content'];
 			$columnId = static::$databaseColumnId;
 			$comment = preg_replace_callback( 
-				'/(?<start>^|\s|\B)((?!(#[a-fA-F0-9]{3})(\W|$)|(#[a-fA-F0-9]{6})(\W|$))#(?<hashtag>\w*(?:[^\x00-\x7F]|\pL)+\w*))(?<end>$|\s|\b)/iu',
+				'/(?<start>^|\s|\B)(<(?<span>span) data-hashtag=[^>]*>)?((?!(#[a-fA-F0-9]{3})(\W|$)|(#[a-fA-F0-9]{6})(\W|$))#(?<hashtag>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?/iu',
 				function( $matches ) use ( $item, $member, $columnId, $obj ) {
 	
 					$hashtagId = \IPS\Db::i()->insert(
@@ -39,7 +39,7 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 						]
 					);
 
-					return "{$matches['start']}<span data-hashtag=\"{$matches['hashtag']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag']}</span>{$matches['end']}";
+					return "{$matches['start']}<span data-hashtag=\"{$matches['hashtag']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag']}</span>";
 				}, 
 				$comment
 			);
@@ -76,8 +76,10 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 				]
 			);
 
+			\IPS\Log::log($newContent);
+
 			$newContent = preg_replace_callback( 
-				'/(?<start>^|\s|\B)((?!(#[a-fA-F0-9]{3})(\W|$)|(#[a-fA-F0-9]{6})(\W|$))#(?<hashtag>\w*(?:[^\x00-\x7F]|\pL)+\w*))(?<end>$|\s|\b)/iu',
+				'/(?<start>^|\s|\B)(<(?<span>span) data-hashtag=[^>]*>)?((?!(#[a-fA-F0-9]{3})(\W|$)|(#[a-fA-F0-9]{6})(\W|$))#(?<hashtag>\w*(?:[^\x00-\x7F]|\pL)+\w*))(<\/\k<span>>)?/iu',
 				function( $matches ) use ( $node, $author, $item, $itemColumnId, $columnId ) {
 					
 					$hashtagId = \IPS\Db::i()->insert(
@@ -94,7 +96,9 @@ abstract class hashtags_hook_S_Content_Comment extends _HOOK_CLASS_
 						]
 					);
 
-					return "{$matches['start']}<span data-hashtag=\"{$matches['hashtag']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag']}</span>{$matches['end']}";
+					\IPS\Log::log($matches);
+
+					return "{$matches['start']}<span data-hashtag=\"{$matches['hashtag']}\" data-hashtag-id=\"{$hashtagId}\">#{$matches['hashtag']}</span>";
 				}, 
 				$newContent
 			);

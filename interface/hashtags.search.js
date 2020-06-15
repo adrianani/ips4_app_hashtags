@@ -13,6 +13,8 @@
                 hashtagFilterUrl = ips.getSetting('baseURL') + 'index.php?app=core&module=search&controller=search&hashtags=' + $(e.target).data('hashtag');
 
             while( !isLink && elementToCheck.data('controller') !== 'core.front.core.lightboxedImages' ) {
+                console.log(elementToCheck.data('class'));
+
                 if( elementToCheck.prop('tagName') === 'A' ) {
                     url = elementToCheck.attr('href');
                     isLink = true;
