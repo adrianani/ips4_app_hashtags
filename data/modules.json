@@ -2,7 +2,8 @@
     "admin": {
         "overview": {
             "default_controller": "",
-            "protected": false
+            "protected": 0
         }
-    }
+    },
+    "front": []
 }

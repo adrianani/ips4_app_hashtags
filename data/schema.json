@@ -184,5 +184,93 @@
             }
         },
         "collation": "utf8mb4_unicode_ci"
+    },
+    "hashtags_search_index": {
+        "name": "hashtags_search_index",
+        "columns": {
+            "id": {
+                "allow_null": false,
+                "auto_increment": true,
+                "binary": false,
+                "comment": "ID Number",
+                "decimals": null,
+                "default": null,
+                "length": 20,
+                "name": "id",
+                "type": "BIGINT",
+                "unsigned": true,
+                "values": [],
+                "zerofill": false
+            },
+            "hashtag": {
+                "allow_null": true,
+                "auto_increment": false,
+                "binary": false,
+                "comment": "",
+                "decimals": null,
+                "default": null,
+                "length": 140,
+                "name": "hashtag",
+                "type": "CHAR",
+                "unsigned": false,
+                "values": [],
+                "zerofill": false
+            },
+            "search_index_id": {
+                "allow_null": false,
+                "auto_increment": false,
+                "binary": false,
+                "comment": "",
+                "decimals": null,
+                "default": "0",
+                "length": 20,
+                "name": "search_index_id",
+                "type": "BIGINT",
+                "unsigned": true,
+                "values": [],
+                "zerofill": false
+            },
+            "meta_app": {
+                "allow_null": true,
+                "auto_increment": false,
+                "binary": false,
+                "comment": "",
+                "decimals": null,
+                "default": null,
+                "length": 200,
+                "name": "meta_app",
+                "type": "VARCHAR",
+                "unsigned": false,
+                "values": [],
+                "zerofill": false
+            },
+            "created": {
+                "allow_null": false,
+                "auto_increment": false,
+                "binary": false,
+                "comment": "",
+                "decimals": null,
+                "default": "0",
+                "length": 10,
+                "name": "created",
+                "type": "INT",
+                "unsigned": true,
+                "values": [],
+                "zerofill": false
+            }
+        },
+        "indexes": {
+            "PRIMARY": {
+                "type": "primary",
+                "name": "PRIMARY",
+                "length": [
+                    null
+                ],
+                "columns": [
+                    "id"
+                ]
+            }
+        },
+        "collation": "utf8mb4_unicode_ci"
     }
 }

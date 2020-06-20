@@ -7,4 +7,21 @@ span[data-hashtag]:hover {
   color: {theme="link_hover"};
   cursor: pointer;
 }
-/*# sourceMappingURL=hashtags.css.map */
+
+.cHashtag_horizontal {
+  padding: 10px 20px;
+}
+
+.cHashtag_horizontal:not(:last-child) {
+  border-right: 1px solid #eee;
+}
+
+div[data-role="editor"] span[data-hashtag] {
+  cursor: inherit;
+  color: inherit;
+  font-weight: inherit;
+}
+
+div[data-role="editor"] span[data-hashtag]:hover {
+  color: inherit;
+}

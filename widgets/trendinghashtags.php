@@ -124,7 +124,7 @@ class _trendinghashtags extends \IPS\Widget\StaticCache
 				'hashtag',
 				'COUNT(*) as `occurences`'
 			],
-			'hashtags_hashtags',
+			'hashtags_search_index',
 			$where,
 			'occurences DESC',
 			$limit,
@@ -138,8 +138,6 @@ class _trendinghashtags extends \IPS\Widget\StaticCache
 		try {
 			$hashtags = iterator_to_array( $query );
 		} catch ( \IPS\Db\Exception $e ) {
-			\IPS\Log::log( $e, 'trending_hashtags_failed' );
-			\IPS\Log::log( ['query' => $query->query, 'filters' => $filters], 'trending_hashtags_failed_query' );
 			$hashtags = [];
 		}
 

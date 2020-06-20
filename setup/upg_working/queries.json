@@ -1,0 +1,45 @@
+[
+    {
+        "method": "addColumn",
+        "params": [
+            "hashtags_search_index",
+            {
+                "name": "created",
+                "type": "INT",
+                "length": 10,
+                "decimals": null,
+                "values": null,
+                "allow_null": false,
+                "default": "TIMESTAMP(NOW())",
+                "comment": "",
+                "unsigned": true,
+                "zerofill": false,
+                "auto_increment": false,
+                "binary": false
+            }
+        ]
+    },
+    {
+        "method": "addIndex",
+        "params": [
+            "hashtags_search_index",
+            {
+                "type": "unique",
+                "name": "search_index_id",
+                "columns": [
+                    "search_index_id"
+                ],
+                "length": [
+                    null
+                ]
+            }
+        ]
+    },
+    {
+        "method": "dropIndex",
+        "params": [
+            "hashtags_search_index",
+            "search_index_id"
+        ]
+    }
+]

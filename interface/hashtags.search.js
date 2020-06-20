@@ -4,6 +4,11 @@
 	ips.controller.mixin('hashtags.search', 'core.front.core.lightboxedImages', true, function() {
 
         this._hashtagClick = function(e) {
+            
+            if($(e.target).parents('div[data-role="editorComposer"]').length > 0) {
+                return 0;
+            }
+
             e.preventDefault();
 
             // check if hashtag is a link / part of a link, if it is we hold it's url
@@ -46,6 +51,11 @@
         }
 
         this._hashtagTooltip = function(e) {
+            
+            if($(e.target).parents('div[data-role="editorComposer"]').length > 0) {
+                return 0;
+            }
+
             let elm = $(e.target);
 
             elm.attr('_title', ips.getString('hashtagsFilterBy', {hashtag: elm.data('hashtag')}));

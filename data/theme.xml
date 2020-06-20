@@ -48,11 +48,11 @@
 		{$chart|raw}
 	</div>
 </div>]]></template>
- <template template_group="widgets" template_name="trendinghashtags" template_data="$hashtags" template_location="front" template_app="hashtags"><![CDATA[
+ <template template_group="widgets" template_name="trendinghashtags" template_data="$hashtags, $title, $orientation='vertical'" template_location="front" template_app="hashtags"><![CDATA[
 <h3 class="ipsWidget_title ipsType_reset">
-    {lang="hashtags_trending"}
+    {$title}
 </h3>
-<div class="ipsWidget ipsPad_half">
+<div class="ipsWidget_inner ipsPad_half">
     {{if empty($hashtags)}}
         <div class="ipsPad">
             <p class="ipsType_reset">
@@ -60,20 +60,43 @@
             </p>
         </div>
     {{else}}
-        <div class="ipsDataList">
-            {{foreach $hashtags as $hashtag}}
-                <div class="ipsDataItem">
-                    <div class="ipsDataItem_main">
-                        <a href="{url='app=core&module=search&controller=search&hashtags='}{$hashtag['hashtag']}">
-                            <strong class='ipsType_large'>#{$hashtag['hashtag']}</strong>
-                        </a> <br />
-                        <span class='ipsType_light'>
-                            {lang="hashtags_trending_uses" pluralize="$hashtag['occurences']"}
-                        </span>
+        {{if $orientation === 'vertical'}}
+            <div class="ipsDataList">
+                {{foreach $hashtags as $hashtag}}
+                    <div class="ipsDataItem">
+                        <div class="ipsDataItem_main">
+                            <a href="{url='app=core&module=search&controller=search&hashtags='}{$hashtag['hashtag']}">
+                                <strong class='ipsType_large' style="word-break: break-all;">#{$hashtag['hashtag']}</strong>
+                            </a> <br />
+                            <span class='ipsType_light'>
+                                {lang="hashtags_trending_uses" pluralize="$hashtag['occurences']"}
+                            </span>
+                        </div>
                     </div>
+                {{endforeach}}
+            </div>
+        {{else}}
+            <div class="ipsCarousel ipsClearfix" data-ipscarousel>
+                <div class="ipsCarousel_inner">
+                    <div class="ipsList_reset" data-role="carouselItems">
+                        {{foreach $hashtags as $hashtag}}
+                            <div class="cHashtag_horizontal ipsCarousel_item">
+                                <a href="{url='app=core&module=search&controller=search&hashtags='}{$hashtag['hashtag']}">
+                                    <strong class='ipsType_large' style="word-break: break-all;">#{$hashtag['hashtag']}</strong>
+                                </a> <br />
+                                <span class='ipsType_light'>
+                                    {lang="hashtags_trending_uses" pluralize="$hashtag['occurences']"}
+                                </span>
+                            </div>
+                        {{endforeach}}
+                    </div>
+                    <span class='ipsCarousel_shadow ipsCarousel_shadowLeft'></span>
+                    <span class='ipsCarousel_shadow ipsCarousel_shadowRight'></span>
+                    <a href='#' class='ipsCarousel_nav ipsHide' data-action='prev'><i class='fa fa-chevron-left'></i></a>
+                    <a href='#' class='ipsCarousel_nav ipsHide' data-action='next'><i class='fa fa-chevron-right'></i></a>
                 </div>
-            {{endforeach}}
-        </div>
+            </div>
+        {{endif}}
     {{endif}}
 </div>]]></template>
  <css css_location="admin" css_app="hashtags" css_attributes="" css_path="." css_name="hashtags.css">.hashtagsStat {
@@ -97,5 +120,22 @@ span[data-hashtag]:hover {
   color: {theme=&quot;link_hover&quot;};
   cursor: pointer;
 }
-/*# sourceMappingURL=hashtags.css.map */</css>
+
+.cHashtag_horizontal {
+  padding: 10px 20px;
+}
+
+.cHashtag_horizontal:not(:last-child) {
+  border-right: 1px solid #eee;
+}
+
+div[data-role=&quot;editor&quot;] span[data-hashtag] {
+  cursor: inherit;
+  color: inherit;
+  font-weight: inherit;
+}
+
+div[data-role=&quot;editor&quot;] span[data-hashtag]:hover {
+  color: inherit;
+}</css>
 </theme>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <language>
- <app key="hashtags" version="10002">
+ <app key="hashtags" version="10004">
   <word key="__app_hashtags" js="0">Hashtags</word>
   <word key="menutab__hashtags_icon" js="0">hashtag</word>
   <word key="menutab__hashtags" js="0">Hashtags</word>
@@ -17,8 +17,16 @@
   <word key="hashtags_trending" js="0">Trending hashtags</word>
   <word key="hashtags_trending_none" js="0">No hashtags are trending at this moment.</word>
   <word key="hashtags_trending_uses" js="0">Used {# [1:time][?:times]}</word>
+  <word key="hashtags_widget_title" js="0">Widget title</word>
+  <word key="block_trendinghashtags" js="0">Trending hashtags</word>
+  <word key="block_trendinghashtags_desc" js="0">Show trending hashtags across the board</word>
+  <word key="hashtags_trending_criteria_count" js="0">Number of occurences to be considered trending</word>
+  <word key="hashtags_trending_criteria_count_unlimited" js="0">Use most occurences criteria</word>
+  <word key="hashtags_trending_criteria_hours" js="0">Numbers of hours for trending criteria</word>
+  <word key="hashtags_trending_filter" js="0">Hashtags to filter out from trending</word>
+  <word key="hashtags_trending_filter_desc" js="0">Enter just the word without the #</word>
   <word key="hashtagsLinkWarning" js="1">Hashtag has another link</word>
   <word key="hashtagsLinkWarningSubtext" js="1"><![CDATA[The hashtag you want to filter content by was linked to another url by it's author. Press <strong>Yes</strong> to open the other url in a new tab and the search in this tab, <strong>No</strong> to continue with the search ignoring the other link or <strong>Cancel</strong> to dismiss everything.]]></word>
-  <word key="hashtagsFilterBy" js="1">Search content using #{{hashtag}}</word>
+  <word key="hashtagsFilterBy" js="1">Search content using the hashtag &quot;{{hashtag}}&quot;</word>
  </app>
 </language>

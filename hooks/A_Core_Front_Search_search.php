@@ -26,7 +26,7 @@ class hashtags_hook_A_Core_Front_Search_search extends _HOOK_CLASS_
 
 			if( !\IPS\Settings::i()->tags_enabled and isset( \IPS\Request::i()->tags ) )
 			{
-				\IPS\Output::i()->error( 'page_doesnt_exist', '2C205/4', 404, '' );
+				\IPS\Output::i()->error( 'page_doesnt_exist', 'HT000', 404, '' );
 			}
 
 			return $this->_results();

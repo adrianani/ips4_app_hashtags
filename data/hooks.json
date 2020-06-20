@@ -1,12 +1,4 @@
 {
-    "S_Content_Item": {
-        "type": "C",
-        "class": "\\IPS\\Content\\Item"
-    },
-    "S_Content_Comment": {
-        "type": "C",
-        "class": "\\IPS\\Content\\Comment"
-    },
     "S_Dispacher_Standard": {
         "type": "C",
         "class": "\\IPS\\Dispatcher\\Standard"
@@ -18,5 +10,9 @@
     "A_Core_Front_Search_search": {
         "type": "C",
         "class": "\\IPS\\core\\modules\\front\\search\\search"
+    },
+    "Content_Search_Mysql_index": {
+        "type": "C",
+        "class": "\\IPS\\Content\\Search\\Mysql\\Index"
     }
 }

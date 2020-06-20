@@ -33,20 +33,20 @@ class _dashboard extends \IPS\Dispatcher\Controller
 		
 		\IPS\Output::i()->cssFiles = array_merge( \IPS\Output::i()->cssFiles, \IPS\Theme::i()->css( 'hashtags.css' ) );
 		
-		$allTimeMostUsed = \IPS\Db::i()->query("SELECT hashtag, COUNT(*) AS occurences FROM hashtags_hashtags GROUP BY hashtag ORDER BY occurences DESC LIMIT 1")->fetch_assoc();
-		$todayMostUsed = \IPS\Db::i()->query("SELECT hashtag, COUNT(*) AS occurences FROM hashtags_hashtags WHERE DATE_FORMAT(FROM_UNIXTIME(created), '%Y-%m-%d') = CURDATE() GROUP BY hashtag ORDER BY occurences DESC LIMIT 1")->fetch_assoc();
+		$allTimeMostUsed = \IPS\Db::i()->query("SELECT hashtag, COUNT(*) AS occurences FROM hashtags_search_index GROUP BY hashtag ORDER BY occurences DESC LIMIT 1")->fetch_assoc();
+		$todayMostUsed = \IPS\Db::i()->query("SELECT hashtag, COUNT(*) AS occurences FROM hashtags_search_index WHERE DATE_FORMAT(FROM_UNIXTIME(created), '%Y-%m-%d') = CURDATE() GROUP BY hashtag ORDER BY occurences DESC LIMIT 1")->fetch_assoc();
 		$quickStats = [
-			'uniq_hashtags' => \IPS\Db::i()->query("SELECT COUNT(*) as uniq FROM (SELECT DISTINCT created FROM hashtags_hashtags) unique_hashtags")->fetch_assoc()['uniq'],
+			'uniq_hashtags' => \IPS\Db::i()->query("SELECT COUNT(*) as uniq FROM (SELECT DISTINCT created FROM hashtags_search_index) unique_hashtags")->fetch_assoc()['uniq'],
 			'ever_hashtag' => !empty($allTimeMostUsed['hashtag']) ? $allTimeMostUsed['hashtag'] : 0,
 			'ever_hashtag_use' => !empty($allTimeMostUsed['occurences']) ? $allTimeMostUsed['occurences'] : 0,
-			'today_hashtags' => \IPS\Db::i()->query("SELECT COUNT(*) AS today FROM (SELECT DISTINCT created AS created_date FROM hashtags_hashtags WHERE DATE_FORMAT(FROM_UNIXTIME(created), '%Y-%m-%d') = CURDATE()) today_hashtags")->fetch_assoc()['today'],
+			'today_hashtags' => \IPS\Db::i()->query("SELECT COUNT(*) AS today FROM (SELECT DISTINCT created AS created_date FROM hashtags_search_index WHERE DATE_FORMAT(FROM_UNIXTIME(created), '%Y-%m-%d') = CURDATE()) today_hashtags")->fetch_assoc()['today'],
 			'today_hashtag' => !empty($todayMostUsed['hashtag']) ? $todayMostUsed['hashtag'] : 0,
 			'today_hashtag_use' => !empty($todayMostUsed['occurences']) ? $todayMostUsed['occurences'] : 0,
 		];
 
 		$chart = new \IPS\Helpers\Chart\Database(
 			\IPS\Http\Url::internal('app=hashtags&module=overview&controller=dashboard&do=chart'),
-			'hashtags_hashtags',
+			'hashtags_search_index',
 			'created',
 			'',
 			[
@@ -63,7 +63,7 @@ class _dashboard extends \IPS\Dispatcher\Controller
 
 		$chart->groupBy = 'meta_app';
 
-		foreach( \IPS\Db::i()->query('SELECT DISTINCT meta_app FROM hashtags_hashtags') as $row ) {
+		foreach( \IPS\Db::i()->query('SELECT DISTINCT meta_app FROM hashtags_search_index') as $row ) {
 			$chart->addSeries( 
 				\IPS\Member::loggedIn()->language()->addToStack('hashtags_stats_used_app_hashtags') . \IPS\Member::loggedIn()->language()->addToStack('__app_' . $row['meta_app']),
 				'number',
@@ -82,7 +82,7 @@ class _dashboard extends \IPS\Dispatcher\Controller
 	public function chart() {
 		$chart = new \IPS\Helpers\Chart\Database(
 			\IPS\Http\Url::internal('app=hashtags&module=overview&controller=dashboard&do=chart'),
-			'hashtags_hashtags',
+			'hashtags_search_index',
 			'created',
 			'',
 			[
@@ -99,7 +99,7 @@ class _dashboard extends \IPS\Dispatcher\Controller
 
 		$chart->groupBy = 'meta_app';
 
-		foreach( \IPS\Db::i()->query('SELECT DISTINCT meta_app FROM hashtags_hashtags') as $row ) {
+		foreach( \IPS\Db::i()->query('SELECT DISTINCT meta_app FROM hashtags_search_index') as $row ) {
 			$chart->addSeries( 
 				\IPS\Member::loggedIn()->language()->addToStack('hashtags_stats_used_app_hashtags') . \IPS\Member::loggedIn()->language()->addToStack('__app_' . $row['meta_app']),
 				'number',
